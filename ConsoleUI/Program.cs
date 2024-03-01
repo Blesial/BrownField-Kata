@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using BrownFieldLibrary;
+using BrownFieldLibrary.Models;
 
 namespace ConsoleUI
 {
@@ -10,11 +11,11 @@ namespace ConsoleUI
         {
             double totalHours;
 
-            List<TimeSheetEntry> timeSheets = LoadTimeSheets();
+            List<TimeSheetEntryModel> timeSheets = LoadTimeSheets();
 
-            BillCustomer(timeSheets, "Acme", 150);
+            List<CustomerModel> customers = DataAccess.GetCustomers();
 
-            BillCustomer(timeSheets, "Abc", 125);
+            customers.ForEach(x => BillCustomer(timeSheets, x)); // Delegate
 
             totalHours = 0;
             for (var i = 0; i < timeSheets.Count; i++)
@@ -34,16 +35,17 @@ namespace ConsoleUI
             Console.ReadKey();
         }
 
-        private static void BillCustomer(List<TimeSheetEntry> timeSheets, string companyName, decimal hourlyRate)
+        private static void BillCustomer(List<TimeSheetEntryModel> timeSheets, CustomerModel customer)
         {
-            double totalHours = TimeSheetProcessor.GetHoursWorkedForCompany(timeSheets, companyName);
-            Console.WriteLine($"Simulating Sending email to { companyName }");
-            Console.WriteLine("Your bill is $" + ((decimal)totalHours * hourlyRate) + " for the hours worked.");
+            double totalHours = TimeSheetProcessor.GetHoursWorkedForCompany(timeSheets, customer.Name);
+            Console.WriteLine($"Simulating Sending email to { customer.Name }");
+            Console.WriteLine("Your bill is $" + ((decimal)totalHours * customer.HourlyRate) + " for the hours worked.");
+
         }
 
-        private static List<TimeSheetEntry> LoadTimeSheets()
+        private static List<TimeSheetEntryModel> LoadTimeSheets()
         {
-            List<TimeSheetEntry> output = new List<TimeSheetEntry>();
+            List<TimeSheetEntryModel> output = new List<TimeSheetEntryModel>();
             string enterMoreTimeSheets;
 
             do
@@ -63,7 +65,7 @@ namespace ConsoleUI
                     rawTimeWorked = Console.ReadLine();
                 }
 
-                var timeSheet = new TimeSheetEntry
+                var timeSheet = new TimeSheetEntryModel
                 {
                     HoursWorked = hoursWorked,
                     WorkDone = workDone

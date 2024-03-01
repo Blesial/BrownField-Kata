@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using BrownFieldLibrary.Models;
+using System.Collections.Generic;
 
 namespace BrownFieldLibrary
 {
     public static class TimeSheetProcessor
     {
-        public static double GetHoursWorkedForCompany(List<TimeSheetEntry> timesSheets, string companyName)
+        public static double GetHoursWorkedForCompany(List<TimeSheetEntryModel> timesSheets, string companyName)
         {
             double output = 0;
 

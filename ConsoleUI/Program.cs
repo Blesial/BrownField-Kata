@@ -1,8 +1,6 @@
-﻿using System;
+﻿using BrownFieldLibrary;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace ConsoleUI
@@ -11,37 +9,18 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
-            string w, rawTimeWorked;
-            int i;
-            double ttl, t;
-
             List<TimeSheetEntry> timeSheets = LoadTimeSheets();
 
-            ttl = 0;
-
-            for (i = 0; i < timeSheets.Count; i++)
-            {
-                if (timeSheets[i].WorkDone.ToLower().Contains("acme"))
-                {
-                    ttl += timeSheets[i].HoursWorked;
-                }
-            }
+            double acmeHoursWorked = TimeSheetProcessor.GetHoursWorkedForCompany(timeSheets, "acme");
             Console.WriteLine("Simulating Sending email to Acme");
-            Console.WriteLine("Your bill is $" + ttl * 150 + " for the hours worked.");
+            Console.WriteLine("Your bill is $" + acmeHoursWorked * 150 + " for the hours worked.");
 
-            ttl = 0;
-            for (i = 0; i < timeSheets.Count; i++)
-            {
-                if (timeSheets[i].WorkDone.ToLower().Contains("abc"))
-                {
-                    ttl += timeSheets[i].HoursWorked;
-                }
-            }
+            double abcHoursWorked = TimeSheetProcessor.GetHoursWorkedForCompany(timeSheets, "abc");
             Console.WriteLine("Simulating Sending email to ABC");
-            Console.WriteLine("Your bill is $" + ttl * 125 + " for the hours worked.");
+            Console.WriteLine("Your bill is $" + abcHoursWorked * 125 + " for the hou  worked.");
 
-            ttl = 0;
-            for (i = 0; i < timeSheets.Count; i++)
+            double ttl = 0;
+            for (var i = 0; i < timeSheets.Count; i++)
             {
                 ttl += timeSheets[i].HoursWorked;
             }
@@ -94,11 +73,4 @@ namespace ConsoleUI
             return output;
         }
     }
-    public class TimeSheetEntry
-    {
-        public string WorkDone;
-        public double HoursWorked;
-    }
-
-    
 }

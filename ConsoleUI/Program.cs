@@ -1,7 +1,6 @@
-﻿using BrownFieldLibrary;
-using System;
+﻿using System;
 using System.Collections.Generic;
-
+using BrownFieldLibrary;
 
 namespace ConsoleUI
 {
@@ -9,32 +8,37 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
+            double totalHours;
+
             List<TimeSheetEntry> timeSheets = LoadTimeSheets();
 
-            double acmeHoursWorked = TimeSheetProcessor.GetHoursWorkedForCompany(timeSheets, "acme");
-            Console.WriteLine("Simulating Sending email to Acme");
-            Console.WriteLine("Your bill is $" + acmeHoursWorked * 150 + " for the hours worked.");
+            BillCustomer(timeSheets, "Acme", 150);
 
-            double abcHoursWorked = TimeSheetProcessor.GetHoursWorkedForCompany(timeSheets, "abc");
-            Console.WriteLine("Simulating Sending email to ABC");
-            Console.WriteLine("Your bill is $" + abcHoursWorked * 125 + " for the hou  worked.");
+            BillCustomer(timeSheets, "Abc", 125);
 
-            double ttl = 0;
+            totalHours = 0;
             for (var i = 0; i < timeSheets.Count; i++)
             {
-                ttl += timeSheets[i].HoursWorked;
+                totalHours += timeSheets[i].HoursWorked;
             }
-            if (ttl > 40)
+            if (totalHours > 40)
             {
-                Console.WriteLine("You will get paid $" + (((ttl - 40) * 15) + (40 * 10)) + " for your work.");
+                Console.WriteLine("You will get paid $" + (((totalHours - 40) * 15) + (40 * 10)) + " for your work.");
             }
             else
             {
-                Console.WriteLine("You will get paid $" + ttl * 10 + " for your time.");
+                Console.WriteLine("You will get paid $" + totalHours * 10 + " for your time.");
             }
             Console.WriteLine();
             Console.Write("Press any key to exit application...");
             Console.ReadKey();
+        }
+
+        private static void BillCustomer(List<TimeSheetEntry> timeSheets, string companyName, decimal hourlyRate)
+        {
+            double totalHours = TimeSheetProcessor.GetHoursWorkedForCompany(timeSheets, companyName);
+            Console.WriteLine($"Simulating Sending email to { companyName }");
+            Console.WriteLine("Your bill is $" + ((decimal)totalHours * hourlyRate) + " for the hours worked.");
         }
 
         private static List<TimeSheetEntry> LoadTimeSheets()
@@ -59,9 +63,11 @@ namespace ConsoleUI
                     rawTimeWorked = Console.ReadLine();
                 }
 
-                TimeSheetEntry timeSheet = new TimeSheetEntry();
-                timeSheet.HoursWorked = hoursWorked;
-                timeSheet.WorkDone = workDone;
+                var timeSheet = new TimeSheetEntry
+                {
+                    HoursWorked = hoursWorked,
+                    WorkDone = workDone
+                };
                 output.Add(timeSheet);
 
                 Console.Write("Do you want to enter more time (yes/no): ");

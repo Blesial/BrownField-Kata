@@ -1,6 +1,4 @@
-﻿using ConsoleUI;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace BrownFieldLibrary
 {
@@ -17,11 +15,7 @@ namespace BrownFieldLibrary
                     output += timesSheets[i].HoursWorked;
                 }
             }
-        }
-
-        public static double GetHoursWorkedForCompany(string v)
-        {
-            throw new NotImplementedException();
+            return output;
         }
     }
 }

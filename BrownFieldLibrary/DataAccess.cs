@@ -16,6 +16,18 @@ namespace BrownFieldLibrary
 
             return output;
         }
+
+        public static EmployeeModel GetCurrentEmployee()
+        {
+            EmployeeModel output = new EmployeeModel
+            {
+                FirstName = "Chon",
+                LastName = "Quire",
+                HourlyRate = 15
+            };
+
+            return output;
+        }
     }
 }
      

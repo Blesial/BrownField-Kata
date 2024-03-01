@@ -9,30 +9,26 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
-            double totalHours;
-
             List<TimeSheetEntryModel> timeSheets = LoadTimeSheets();
 
             List<CustomerModel> customers = DataAccess.GetCustomers();
 
+            EmployeeModel currentEmployee = DataAccess.GetCurrentEmployee();
+
             customers.ForEach(x => BillCustomer(timeSheets, x)); // Delegate
 
-            totalHours = 0;
-            for (var i = 0; i < timeSheets.Count; i++)
-            {
-                totalHours += timeSheets[i].HoursWorked;
-            }
-            if (totalHours > 40)
-            {
-                Console.WriteLine("You will get paid $" + (((totalHours - 40) * 15) + (40 * 10)) + " for your work.");
-            }
-            else
-            {
-                Console.WriteLine("You will get paid $" + totalHours * 10 + " for your time.");
-            }
+            PayEmployee(timeSheets, currentEmployee);
+
             Console.WriteLine();
             Console.Write("Press any key to exit application...");
             Console.ReadKey();
+        }
+
+        private static void PayEmployee(List<TimeSheetEntryModel> timeSheets, EmployeeModel employee)
+        {
+            decimal totalPay = TimeSheetProcessor.CalculateEmployeePay(timeSheets, employee);
+          
+                Console.WriteLine($"You will get paid ${totalPay} for your time.");
         }
 
         private static void BillCustomer(List<TimeSheetEntryModel> timeSheets, CustomerModel customer)
@@ -40,7 +36,6 @@ namespace ConsoleUI
             double totalHours = TimeSheetProcessor.GetHoursWorkedForCompany(timeSheets, customer.Name);
             Console.WriteLine($"Simulating Sending email to { customer.Name }");
             Console.WriteLine("Your bill is $" + ((decimal)totalHours * customer.HourlyRate) + " for the hours worked.");
-
         }
 
         private static List<TimeSheetEntryModel> LoadTimeSheets()
@@ -77,6 +72,8 @@ namespace ConsoleUI
                 enterMoreTimeSheets = Console.ReadLine();
 
             } while (enterMoreTimeSheets.ToLower() == "yes");
+
+            Console.WriteLine();
 
             return output;
         }
